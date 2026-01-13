@@ -136,24 +136,24 @@ def process_image(input_image_path, output_image_path, output_excel_path,
 if __name__ == "__main__":
     hex_palette = vliegerColor()
     name_palette = "vliegerColor"
-    print("Please select an image file...")
+    print("Please select an image file")
     
     input_image_path = select_image_file()
     
     if not input_image_path:
-        print("No file selected. Exiting.")
+        print("No file selected")
     else:
         print(f"Selected: {input_image_path}")
         
-        print("\nChoose save location for mapped image...")
+        print("\nSave location:")
         output_image_path = select_save_location(f"{input_image_path}_{name_palette}.png")
         
         if not output_image_path:
-            print("No save location selected. Exiting.")
+            print("No save location chosen")
         else:
-            print(f"Will save image to: {output_image_path}")
+            print(f"image saved to: {output_image_path}")
             
-            print("\nChoose save location for Excel file...")
+            print("\nChoose save location for Excel file")
             output_excel_path = select_save_location(f"{input_image_path}_{name_palette}.xlsx")
             
             if not output_excel_path:
