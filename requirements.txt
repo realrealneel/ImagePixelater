@@ -1,3 +1,5 @@
-openpyxl
-skimage
+Pillow
+scikit-image
 scipy
+numpy
+openpyxl

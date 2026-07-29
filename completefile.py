@@ -24,7 +24,7 @@ def pixelate_to_size(image_path, scale_factor):
     image = Image.open(image_path)
     width, height = image.size
     pixelated_image = image.resize(
-        (width // scale_factor, height // scale_factor), 
+        (width // scale_factor, height // scale_factor),
         resample=Image.NEAREST
     )
     return pixelated_image
@@ -68,8 +68,8 @@ def save_indices_to_excel(indices_2d, palette_rgba, output_path):
         hex_color = f'{color[0]:02X}{color[1]:02X}{color[2]:02X}'
         cell = ws.cell(row=1, column=i+1, value=i)
         cell.fill = PatternFill(
-            start_color=hex_color, 
-            end_color=hex_color, 
+            start_color=hex_color,
+            end_color=hex_color,
             fill_type="solid"
         )
     counts = np.bincount(indices_2d.flatten(), minlength=len(palette_rgba))
@@ -111,60 +111,77 @@ def select_save_location(default_name):
     return file_path
 
 
-def process_image(input_image_path, output_image_path, output_excel_path, 
+def process_image(input_image_path, output_image_path, output_excel_path,
                   hex_palette, scale_factor):
     print("Step 1: Pixelating image...")
     pixelated = pixelate_to_size(input_image_path, scale_factor)
     temp_path = "temp_pixelated.png"
     pixelated.save(temp_path)
-    
+
     print("Step 2: Preparing color palette...")
     rgba_palette = np.array([hex_to_rgba(h) for h in hex_palette], dtype=np.uint8)
     rgb_palette = rgba_palette[:, :3]
     kdtree = KDTree(rgb_palette)
-    
+
     print("Step 3: Mapping colors to palette...")
     indices = map_image_to_palette_indices(temp_path, kdtree)
-    
+
     print("Step 4: Exporting results...")
     save_mapped_image(indices, rgba_palette, output_image_path)
     save_indices_to_excel(indices, rgba_palette, output_excel_path)
-    
+
+    # Clean up the temp pixelated file now that we're done with it
+    if os.path.exists(temp_path):
+        os.remove(temp_path)
+
     print("\nProcessing complete!")
 
 
 if __name__ == "__main__":
-    hex_palette = vliegerColor()
-    name_palette = "vliegerColor"
+
+    color = sixInchTuttleColors
+    hex_palette = color()
+    scale_factor = 80
+
+    # Use the function's own name as a clean, filesystem-safe label
+    # instead of str(color), which would print something like
+    # "<function origamiColors at 0x...>"
+    name_palette = color.__name__
+
     print("Please select an image file")
-    
+
     input_image_path = select_image_file()
-    
+
     if not input_image_path:
         print("No file selected")
     else:
         print(f"Selected: {input_image_path}")
-        
+
+        # Strip the directory AND the original extension so we don't end
+        # up with something like "cat.png_origamiColors.png". base_name
+        # is just the bare stem, e.g. "cat".
+        base_name = os.path.splitext(os.path.basename(input_image_path))[0]
+
         print("\nSave location:")
-        output_image_path = select_save_location(f"{input_image_path}_{name_palette}.png")
-        
+        output_image_path = select_save_location(f"{base_name}_{name_palette}_{scale_factor}.png")
+
         if not output_image_path:
             print("No save location chosen")
         else:
             print(f"image saved to: {output_image_path}")
-            
+
             print("\nChoose save location for Excel file")
-            output_excel_path = select_save_location(f"{input_image_path}_{name_palette}.xlsx")
-            
+            output_excel_path = select_save_location(f"{base_name}_{name_palette}_{scale_factor}.xlsx")
+
             if not output_excel_path:
                 print("No save location selected. Exiting.")
             else:
                 print(f"Will save Excel to: {output_excel_path}")
-                
+
                 process_image(
                     input_image_path=input_image_path,
                     output_image_path=output_image_path,
                     output_excel_path=output_excel_path,
                     hex_palette=hex_palette,
-                    scale_factor=30
+                    scale_factor=scale_factor
                 )
