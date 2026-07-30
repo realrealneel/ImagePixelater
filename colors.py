@@ -21,6 +21,35 @@ def origamiColors():
     "#82bd56ff"
     ]
 
+
+def origamiColors2():
+    "#5c2e91ff",
+    "#b1c81eff",
+    "#90278eff",
+    "#f21a25ff",
+    "#2e3094ff",
+    "#e50486ff",
+    "#54c1acff",
+    "#fe7f1aff",
+    "#00adefff",
+    "#f81823ff",
+    "#00a650ff",
+    "#e5851fff",
+    "#bfd630ff",
+    "#40c9edff",
+    "#6fbf44ff",
+    "#fcf302ff",
+    "#ed1b24ff",
+    "#71c043ff",
+    "#ee018dff",
+    "#faf500ff",
+    "#f68122ff",
+    "#f00190ff",
+    "#fff205ff",
+    "#01acebff"
+
+
+
 def sixInchTuttleColors():
     return [
         "#de5033ff",
